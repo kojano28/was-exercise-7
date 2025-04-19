@@ -66,8 +66,8 @@ def main():
         ant_population=48,
         iterations=200,
         alpha=1.0,
-        beta=5.0,
-        rho=0.3
+        beta=3.0,
+        rho=0.5
     )
 
     # Solve the ant colony optimization problem
