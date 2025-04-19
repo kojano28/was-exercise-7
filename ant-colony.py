@@ -1,3 +1,4 @@
+#ant_colony.py
 import numpy as np
 
 from environment import Environment
@@ -20,9 +21,9 @@ class AntColony:
         self.rho = rho 
 
         # Initialize the environment of the ant colony
-        self.environment = Environment(self.rho)
+        self.environment = Environment(self.rho, self.ant_population)
 
-        # Initilize the list of ants of the ant colony
+        # Initialize the list of ants of the ant colony
         self.ants = []
 
         # Initialize the ants of the ant colony
@@ -37,26 +38,42 @@ class AntColony:
             # Add the ant to the ant colony
             self.ants.append(ant)
 
-    # Solve the ant colony optimization problem  
+    # Solve the ant colony optimization problem  (Task 2.3)
     def solve(self):
 
-        # The solution will be a list of the visited cities
-        solution = []
+        solution, shortest_distance = None, np.inf         
+        for _ in range(self.iterations):
+            ant_tours = []                        
 
-        # Initially, the shortest distance is set to infinite
-        shortest_distance = np.inf
+            for ant in self.ants:
+                ant.join(self.environment)         
+                tour = ant.run()                   
+                ant_tours.append(tour)
+
+                if ant.traveled_distance < shortest_distance:
+                    shortest_distance = ant.traveled_distance
+                    solution = tour
+
+        # update the environment
+            self.environment.update_pheromone_map(ant_tours)
 
         return solution, shortest_distance
 
 
 def main():
     # Intialize the ant colony
-    ant_colony = AntColony(1, None, None, None, None)
+    ant_colony= AntColony(
+        ant_population=48,
+        iterations=200,
+        alpha=1.0,
+        beta=5.0,
+        rho=0.3
+    )
 
     # Solve the ant colony optimization problem
-    solution, distance = ant_colony.solve()
+    solution, shortest_distance = ant_colony.solve()
     print("Solution: ", solution)
-    print("Distance: ", distance)
+    print("Distance: ", shortest_distance)
 
 
 if __name__ == '__main__':
